@@ -1,14 +1,18 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-alpine
-
-# Set the working directory in the container
+FROM openjdk:19-jdk AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src src
 
-# Copy the current directory contents into the container at /app
-COPY target/ProductDetails-0.0.1-SNAPSHOT.jar /app/ProductDetails-0.0.1-SNAPSHOT.jar
+COPY mvnw .
+COPY .mvn .mvn
 
-# Make port 8080 available to the world outside this container
-EXPOSE 8000
+RUN chmod +x ./mvnw
+RUN ./mvnw clean package -DskipTests
 
-# Run the jar file
-ENTRYPOINT ["java", "-jar", "ProductDetails-0.0.1-SNAPSHOT.jar"]
+FROM openjdk:19-jdk
+VOLUME /tmp
+
+COPY --from=build /app/target/*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
+
+EXPOSE 8080
