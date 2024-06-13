@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/ProductDetails-0.0.1-SNAPSHOT.jar /app/ProductDetails-0.0.1-SNAPSHOT.jar
 
 # Make port 8080 available to the world outside this container
-EXPOSE 8080
+EXPOSE 8000
 
 # Run the jar file
 ENTRYPOINT ["java", "-jar", "ProductDetails-0.0.1-SNAPSHOT.jar"]
